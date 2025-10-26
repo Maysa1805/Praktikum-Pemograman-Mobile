@@ -1,0 +1,7 @@
+[
+  { "number": "1", "name": "Shubuh", "arabic": "الصُّبْح" },
+  { "number": "2", "name": "Dzuhur", "arabic": "الظُّهْر" },
+  { "number": "3", "name": "Ashar", "arabic": "العَصْر" },
+  { "number": "4", "name": "Maghrib", "arabic": "المَغْرِب" },
+  { "number": "5", "name": "Isya", "arabic": "العِشَاء" }
+]

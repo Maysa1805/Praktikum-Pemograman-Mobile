@@ -1,0 +1,13 @@
+{
+  "date": "18 Feb 2025",
+  "day": "Tuesday",
+  "hijri": "09 Ram, 1447 H",
+  "next_pray": "02:32",
+  "times": [
+    { "name": "Sunrise", "time": "01:04", "meridiem": "PM" },
+    { "name": "Dhuhr", "time": "01:01", "meridiem": "PM" },
+    { "name": "ASR", "time": "04:38", "meridiem": "PM", "highlight": true },
+    { "name": "Maghrib", "time": "07:57", "meridiem": "PM" },
+    { "name": "Isha", "time": "09:57", "meridiem": "PM" }
+  ]
+}

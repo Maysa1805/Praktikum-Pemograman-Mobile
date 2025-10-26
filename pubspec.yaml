@@ -1,0 +1,49 @@
+name: ramadhan_app
+description: A beautiful Ramadhan Kareem themed Flutter app
+publish_to: 'none' # Remove this line if you want to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+
+  # 🔹 Folder aset untuk gambar, ikon, dan font
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+    - assets/data/
+
+
+  # 🔹 Daftar font yang digunakan dalam aplikasi
+  fonts:
+    - family: Aref Ruqaa
+      fonts:
+        - asset: assets/fonts/ArefRuqaa-Regular.ttf
+        - asset: assets/fonts/ArefRuqaa-Bold.ttf
+          weight: 700
+
+    - family: Aref Ruqaa Ink
+      fonts:
+        - asset: assets/fonts/ArefRuqaaInk-Regular.ttf
+
+    - family: Reem Kufi
+      fonts:
+        - asset: assets/fonts/ReemKufi-Regular.ttf
+
+    - family: Amiri
+      fonts:
+        - asset: assets/fonts/Amiri-Regular.ttf
