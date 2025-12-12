@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ramadhan_app/view/home_screen.dart';
 import 'package:ramadhan_app/view/daily_activitie.dart';
-import 'package:ramadhan_app/view/catatan_ibadah.dart'; // halaman Catatan Ibadah
+import 'package:ramadhan_app/view/catatan_ibadah.dart';
+import 'package:ramadhan_app/pages/calendar.dart';  // ← PERBAIKAN di sini
 
 class BottomNavBar extends StatefulWidget {
-  final int currentIndex; //  Tambahan agar tahu posisi halaman aktif
+  final int currentIndex; // posisi halaman aktif
   const BottomNavBar({super.key, this.currentIndex = 0});
 
   @override
@@ -22,31 +23,33 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   void _onItemTapped(int index) {
     if (_selectedIndex == index) return; // biar tidak reload halaman yang sama
+
     setState(() => _selectedIndex = index);
 
     // 🔹 Navigasi antar halaman
     switch (index) {
-      case 0: // Home
+      case 0:
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
         );
         break;
 
-      case 1: // Daily Activity
+      case 1:
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const DailyActivitie()),
         );
         break;
 
-      case 2: // Radio (belum tersedia)
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Halaman Radio belum tersedia')),
+      case 2: // Kalender
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const CalendarPage()), // ← FIX
         );
         break;
 
-      case 3: // ✅ Catatan Ibadah
+      case 3: // Catatan Ibadah
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const CatatanIbadah()),
@@ -72,7 +75,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           _buildNavItem('assets/icons/vector_1.png', 0),
           _buildNavItem('assets/icons/book-album-svgrepo-com-1.png', 1),
           _buildNavItem('assets/icons/radio-svgrepo-com-1.png', 2),
-          _buildNavItem('assets/icons/vector.png', 3), // tetap sama
+          _buildNavItem('assets/icons/vector.png', 3),
         ],
       ),
     );
@@ -86,7 +89,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
           _selectedIndex == index ? Colors.black : Colors.black54,
           BlendMode.srcIn,
         ),
-        child: Image.asset(asset, height: 35),
+        child: Image.asset(
+          asset,
+          height: 35,
+        ),
       ),
     );
   }

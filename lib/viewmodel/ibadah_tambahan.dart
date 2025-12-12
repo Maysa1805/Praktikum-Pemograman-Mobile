@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:ramadhan_app/data/ibadah_tambahan_store.dart';
 
 class IbadahTambahan extends StatefulWidget {
   const IbadahTambahan({super.key});
@@ -15,6 +17,27 @@ class _IbadahTambahanState extends State<IbadahTambahan> {
   bool dhuha = false;
   bool sedekah = false;
 
+  void _submitData() {
+    List<Map<String, dynamic>> ibadahList = [
+      {"name": "Puasa", "value": puasa},
+      {"name": "Terawih", "value": terawih},
+      {"name": "Dzikir", "value": dzikir},
+      {"name": "Sholat Tahajud", "value": tahajud},
+      {"name": "Sholat Dhuha", "value": dhuha},
+      {"name": "Sedekah", "value": sedekah},
+    ];
+
+    final doneIbadah =
+    ibadahList.where((item) => item["value"] == true).toList();
+
+    String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    // ✅ SIMPAN DATA SESUAI TANGGAL
+    IbadahTambahanStore.save(today, doneIbadah);
+
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +45,6 @@ class _IbadahTambahanState extends State<IbadahTambahan> {
       body: SafeArea(
         child: Stack(
           children: [
-            // 🕌 Gambar bawah
             Positioned(
               bottom: 0,
               left: 0,
@@ -33,8 +55,6 @@ class _IbadahTambahanState extends State<IbadahTambahan> {
                 height: 112,
               ),
             ),
-
-            // 🔙 Tombol kembali
             Positioned(
               top: 20,
               left: 16,
@@ -46,22 +66,8 @@ class _IbadahTambahanState extends State<IbadahTambahan> {
                 ),
               ),
             ),
-
-            // 🌙 Dekorasi pojok
-            Positioned(
-              top: 55,
-              left: 16,
-              child: Image.asset('assets/images/corner_left.png', width: 90),
-            ),
-            Positioned(
-              top: 55,
-              right: 16,
-              child: Image.asset('assets/images/corner_right.png', width: 90),
-            ),
-
-            // 🔹 Judul (dinaikkan sedikit)
             const Positioned(
-              top: 70, // sebelumnya 100 → dinaikkan sedikit
+              top: 70,
               left: 0,
               right: 0,
               child: Center(
@@ -69,65 +75,81 @@ class _IbadahTambahanState extends State<IbadahTambahan> {
                   'Ibadah Tambahan',
                   style: TextStyle(
                     color: Color(0xFFE2BE7F),
-                    fontSize: 28, // sedikit lebih kecil dari 30
+                    fontSize: 28,
                     fontFamily: 'Aref Ruqaa Ink',
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-
-            // 🔹 Daftar ibadah tambahan (lebih kecil & dinaikkan)
             Positioned.fill(
-              top: 155, // sebelumnya 175 → dinaikkan agar lebih ke atas
+              top: 155,
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 100),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 30), // dikurangi dari 40
-
+                    const SizedBox(height: 30),
                     _IbadahItem(
                       title: 'Puasa',
                       value: puasa,
                       onChanged: (v) => setState(() => puasa = v!),
                     ),
                     const SizedBox(height: 14),
-
                     _IbadahItem(
                       title: 'Terawih',
                       value: terawih,
                       onChanged: (v) => setState(() => terawih = v!),
                     ),
                     const SizedBox(height: 14),
-
                     _IbadahItem(
                       title: 'Dzikir',
                       value: dzikir,
                       onChanged: (v) => setState(() => dzikir = v!),
                     ),
                     const SizedBox(height: 14),
-
                     _IbadahItem(
                       title: 'Sholat Tahajud',
                       value: tahajud,
                       onChanged: (v) => setState(() => tahajud = v!),
                     ),
                     const SizedBox(height: 14),
-
                     _IbadahItem(
                       title: 'Sholat Dhuha',
                       value: dhuha,
                       onChanged: (v) => setState(() => dhuha = v!),
                     ),
                     const SizedBox(height: 14),
-
                     _IbadahItem(
                       title: 'Sedekah',
                       value: sedekah,
                       onChanged: (v) => setState(() => sedekah = v!),
                     ),
+                    const SizedBox(height: 70),
                   ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 130,
+              right: 40,
+              child: TextButton(
+                onPressed: _submitData,
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFFE2BE7F),
+                  foregroundColor: const Color(0xFF202020),
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 26),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text(
+                  "Simpan",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'Aref Ruqaa',
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -138,7 +160,6 @@ class _IbadahTambahanState extends State<IbadahTambahan> {
   }
 }
 
-// 🔸 Widget tombol ibadah
 class _IbadahItem extends StatelessWidget {
   final String title;
   final bool value;
@@ -153,13 +174,12 @@ class _IbadahItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40), // sedikit lebih rapat
+      padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
-        height: 50, // sebelumnya 60 → sedikit lebih kecil
+        height: 50,
         decoration: BoxDecoration(
           color: const Color(0xFFE2BE7F),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(width: 1, color: const Color(0xFFE2BE7F)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -169,28 +189,17 @@ class _IbadahItem extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  color: value ? Colors.grey[600] : const Color(0xFF202020),
-                  fontSize: 21, // sebelumnya 23 → lebih kecil sedikit
+                  color:
+                  value ? Colors.grey[600] : const Color(0xFF202020),
+                  fontSize: 21,
                   fontFamily: 'Aref Ruqaa',
                   decoration:
-                  value ? TextDecoration.lineThrough : TextDecoration.none,
-                  decorationColor: Colors.grey[600],
-                  decorationThickness: 2,
+                  value ? TextDecoration.lineThrough : null,
                 ),
               ),
-              SizedBox(
-                width: 20,
-                height: 20,
-                child: Checkbox(
-                  value: value,
-                  onChanged: onChanged,
-                  side: const BorderSide(color: Color(0xFF070707), width: 2),
-                  checkColor: const Color(0xFFE2BE7F),
-                  activeColor: const Color(0xFF070707),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
+              Checkbox(
+                value: value,
+                onChanged: onChanged,
               ),
             ],
           ),

@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 
-class PrayCard extends StatefulWidget {
+class PrayCard extends StatelessWidget {
   final String number;
   final String name;
   final String arabic;
+
+  final bool isChecked;            // ← baru
+  final ValueChanged<bool> onChanged; // ← baru
 
   const PrayCard({
     super.key,
     required this.number,
     required this.name,
     required this.arabic,
+    required this.isChecked,
+    required this.onChanged,
   });
-
-  @override
-  State<PrayCard> createState() => _PrayCardState();
-}
-
-class _PrayCardState extends State<PrayCard> {
-  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,25 +23,21 @@ class _PrayCardState extends State<PrayCard> {
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center, // ✅ biar konten sejajar tengah
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // ✅ Tombol ceklis di kiri
+          // ✅ Checkbox utama
           GestureDetector(
-            behavior: HitTestBehavior.opaque, // biar area klik lebih responsif
             onTap: () {
-              setState(() {
-                isChecked = !isChecked;
-              });
+              onChanged(!isChecked);
             },
             child: Container(
-              padding: const EdgeInsets.all(4), // memperluas area klik
-              color: Colors.transparent, // biar area bisa menerima tap
+              padding: const EdgeInsets.all(4),
+              color: Colors.transparent,
               child: Container(
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color:
-                  isChecked ? const Color(0xFFE2BE7F) : Colors.transparent,
+                  color: isChecked ? const Color(0xFFE2BE7F) : Colors.transparent,
                   border: Border.all(color: Colors.white, width: 1.8),
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -54,14 +48,13 @@ class _PrayCardState extends State<PrayCard> {
             ),
           ),
 
-          // 🕌 Nama & arabic — posisinya dibuat lebih ke tengah
+          // 🕌 Text Arab + Latin (di tengah)
           Expanded(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center, // ✅ tengah horizontal
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  widget.arabic,
+                  arabic,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
@@ -71,7 +64,7 @@ class _PrayCardState extends State<PrayCard> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  widget.name,
+                  name,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white70,
@@ -83,13 +76,13 @@ class _PrayCardState extends State<PrayCard> {
             ),
           ),
 
-          // 🌟 Nomor dalam bintang
+          // ⭐ Nomor bintang
           Stack(
             alignment: Alignment.center,
             children: [
               Image.asset('assets/icons/Group.png', width: 48),
               Text(
-                widget.number,
+                number,
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 18,

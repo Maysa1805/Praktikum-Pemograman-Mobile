@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ramadhan_app/view/daily_activitie.dart';
+import 'package:ramadhan_app/view/catatan_ibadah.dart'; // akses catatanList
 
 class CatatanPage extends StatefulWidget {
   const CatatanPage({super.key});
@@ -18,7 +19,6 @@ class _CatatanPageState extends State<CatatanPage> {
       backgroundColor: const Color(0xFF202020),
       body: Stack(
         children: [
-          // 🔙 Tombol Arrow Back
           Positioned(
             left: 20,
             top: 40,
@@ -33,13 +33,12 @@ class _CatatanPageState extends State<CatatanPage> {
               },
               child: Image.asset(
                 'assets/icons/Arrow-1.png',
-                width: 28, // ukuran kecil
+                width: 28,
                 color: const Color(0xFFE2BE7F),
               ),
             ),
           ),
 
-          // 🕌 Judul "Notes"
           Positioned(
             top: 80,
             left: 0,
@@ -56,7 +55,6 @@ class _CatatanPageState extends State<CatatanPage> {
             ),
           ),
 
-          // 📜 Card Form Catatan
           Positioned(
             top: 200,
             left: 20,
@@ -70,7 +68,6 @@ class _CatatanPageState extends State<CatatanPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 🔸 TextField Judul
                   TextField(
                     controller: judulController,
                     decoration: InputDecoration(
@@ -95,7 +92,6 @@ class _CatatanPageState extends State<CatatanPage> {
 
                   const SizedBox(height: 25),
 
-                  // 🔸 TextField Isi Catatan
                   TextField(
                     controller: isiController,
                     maxLines: 10,
@@ -121,7 +117,6 @@ class _CatatanPageState extends State<CatatanPage> {
 
                   const SizedBox(height: 20),
 
-                  // 🔸 Tombol Simpan
                   Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
@@ -134,9 +129,25 @@ class _CatatanPageState extends State<CatatanPage> {
                             horizontal: 25, vertical: 12),
                       ),
                       onPressed: () {
+                        final judul = judulController.text;
+                        final isi = isiController.text;
+
+                        if (judul.isEmpty || isi.isEmpty) return;
+
+                        // SIMPAN CATATAN
+                        catatanList.add({
+                          'judul': judul,
+                          'isi': isi,
+                        });
+
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Catatan disimpan!")),
+                          const SnackBar(content: Text("✅ Catatan disimpan!")),
                         );
+
+                        setState(() {
+                          judulController.clear();
+                          isiController.clear();
+                        });
                       },
                       child: const Text(
                         "Simpan",
@@ -153,7 +164,6 @@ class _CatatanPageState extends State<CatatanPage> {
             ),
           ),
 
-          // 🌙 Ornamen Bawah (Masjid)
           Positioned(
             bottom: 0,
             left: 0,

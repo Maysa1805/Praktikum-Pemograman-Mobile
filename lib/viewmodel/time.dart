@@ -1,8 +1,8 @@
-import 'dart:convert';
+// time.dart
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:ramadhan_app/widgets/bottom_navbar.dart';
 import 'package:ramadhan_app/widgets/time_card.dart';
+import 'package:ramadhan_app/services/pray_time_service.dart'; // pastikan path benar
 
 class TimePage extends StatefulWidget {
   const TimePage({super.key});
@@ -13,25 +13,42 @@ class TimePage extends StatefulWidget {
 
 class _TimePageState extends State<TimePage> {
   Map<String, dynamic>? data;
+  bool isLoading = true;
+  String? errorMessage;
+
+  // ganti cityId jika mau kota lain
+  final int cityId = 1301; // Jakarta Pusat
 
   @override
   void initState() {
     super.initState();
-    loadJsonData();
+    fetchPrayTimes();
   }
 
-  Future<void> loadJsonData() async {
-    final String response =
-    await rootBundle.loadString('assets/data/pray_time.json');
-    final jsonData = json.decode(response);
+  Future<void> fetchPrayTimes() async {
     setState(() {
-      data = jsonData;
+      isLoading = true;
+      errorMessage = null;
     });
+
+    final service = PrayTimeService(cityId: cityId);
+    try {
+      final result = await service.fetchSchedule();
+      setState(() {
+        data = result;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (data == null) {
+    if (isLoading) {
       return const Scaffold(
         backgroundColor: Color(0xFF202020),
         body: Center(
@@ -40,6 +57,42 @@ class _TimePageState extends State<TimePage> {
       );
     }
 
+    if (errorMessage != null) {
+      return Scaffold(
+        backgroundColor: const Color(0xFF202020),
+        bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Gagal memuat jadwal sholat',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  errorMessage!,
+                  style: TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE2BE7F),
+                  ),
+                  onPressed: fetchPrayTimes,
+                  child: const Text('Coba lagi', style: TextStyle(color: Colors.black)),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // data non-null di sini
     final times = data!['times'] as List<dynamic>;
 
     return Scaffold(
@@ -90,7 +143,7 @@ class _TimePageState extends State<TimePage> {
                             left: 26,
                             top: 14,
                             child: Text(
-                              data!['date'],
+                              data!['date'] ?? '',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -116,7 +169,7 @@ class _TimePageState extends State<TimePage> {
                             left: 154,
                             top: 38,
                             child: Text(
-                              data!['day'],
+                              data!['day'] ?? '',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Color(0xE5202020),
@@ -130,7 +183,7 @@ class _TimePageState extends State<TimePage> {
                             right: 26,
                             top: 14,
                             child: Text(
-                              data!['hijri'],
+                              data!['hijri'] ?? '',
                               textAlign: TextAlign.right,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -144,7 +197,7 @@ class _TimePageState extends State<TimePage> {
                     ),
                   ),
 
-                  // 🔹 Scroll waktu sholat dari JSON
+                  // 🔹 Scroll waktu sholat dari API
                   Positioned(
                     top: 100,
                     left: 0,
@@ -169,9 +222,9 @@ class _TimePageState extends State<TimePage> {
                                     padding:
                                     const EdgeInsets.only(right: 16),
                                     child: TimeCard(
-                                      name: item['name'],
-                                      time: item['time'],
-                                      meridiem: item['meridiem'],
+                                      name: item['name'] ?? '',
+                                      time: item['time'] ?? '',
+                                      meridiem: item['meridiem'] ?? '',
                                       highlight: item['highlight'] ?? false,
                                     ),
                                   );
@@ -192,7 +245,7 @@ class _TimePageState extends State<TimePage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: ' - ${data!['next_pray']}',
+                                  text: ' - ${data!['next_pray'] ?? ''}',
                                   style: const TextStyle(
                                     color: Color(0xFF202020),
                                     fontSize: 16,

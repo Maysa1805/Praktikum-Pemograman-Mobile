@@ -28,3 +28,25 @@ Penjelasan Projek Mobile programing
 4. page 4, atau yang disebut sebagai catatan ibadah, page ini akan menerima data dari page daily activitie.
 
 
+
+Daftar Endpoint API yang Digunakan
+
+Aplikasi terhubung dengan API eksternal berikut:
+
+1. Ambil Kalender Hijriah Satu Bulan
+   Digunakan untuk menampilkan semua tanggal Hijriah beserta daftar hari besar Islam setiap harinya.
+
+GET https://api.aladhan.com/v1/gToHCalendar/{month}/{year}
+Dipakai dalam:
+HijriService.fetchHijriEvents(month, year)
+
+2. Ambil Detail Tanggal Hijriah (1 Tanggal)
+   Digunakan ketika user menekan sebuah tanggal di kalender.
+   GET https://api.aladhan.com/v1/gToH?date=DD-MM-YYYY
+   Dipakai dalam: HijriService.getHijriDate(date)`
+
+
+
+cara instalasi = clone repository
+
+

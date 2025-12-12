@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:ramadhan_app/view/catatan_ibadah.dart'; // ✅ pakai tadarusList dari sini
 
 class TadarusForm extends StatefulWidget {
   const TadarusForm({super.key});
@@ -8,7 +10,7 @@ class TadarusForm extends StatefulWidget {
 }
 
 class _TadarusFormState extends State<TadarusForm> {
-  bool isChecked = false; // ✅ Checkbox status
+  bool isChecked = false;
   final TextEditingController juzController = TextEditingController();
   final TextEditingController halamanController = TextEditingController();
 
@@ -23,7 +25,7 @@ class _TadarusFormState extends State<TadarusForm> {
       ),
       child: Stack(
         children: [
-          // 🕌 Gambar Masjid bawah
+          // 🕌 Background Masjid
           Positioned(
             bottom: 0,
             child: Container(
@@ -38,7 +40,7 @@ class _TadarusFormState extends State<TadarusForm> {
             ),
           ),
 
-          // 🔸 Header "Tadarus" + Checkbox
+          // 🔸 Header + Checkbox
           Positioned(
             left: 35,
             top: 65,
@@ -72,7 +74,7 @@ class _TadarusFormState extends State<TadarusForm> {
                   ),
                   const Spacer(),
 
-                  // ✅ Checkbox aktif
+                  // ✅ Checkbox
                   GestureDetector(
                     onTap: () {
                       setState(() {
@@ -88,7 +90,9 @@ class _TadarusFormState extends State<TadarusForm> {
                             ? const Color(0xFFE2BE7F)
                             : const Color(0xFF202020),
                         border: Border.all(
-                            color: const Color(0xFFE2BE7F), width: 1.5),
+                          color: const Color(0xFFE2BE7F),
+                          width: 1.5,
+                        ),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: isChecked
@@ -107,12 +111,10 @@ class _TadarusFormState extends State<TadarusForm> {
             left: 40,
             top: 140,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   'JUZ',
                   style: TextStyle(
-                    color: Color(0xFF070707),
                     fontSize: 20,
                     fontFamily: 'Aref Ruqaa Ink',
                     fontWeight: FontWeight.bold,
@@ -123,24 +125,15 @@ class _TadarusFormState extends State<TadarusForm> {
                   width: 299,
                   height: 33,
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFF070707), width: 1),
+                    border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: TextField(
                     controller: juzController,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF070707),
-                      fontFamily: 'Aref Ruqaa Ink',
-                      fontSize: 18,
-                    ),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Masukkan Juz...',
-                      hintStyle: TextStyle(
-                        color: Colors.black45,
-                        fontFamily: 'Aref Ruqaa Ink',
-                      ),
                     ),
                   ),
                 ),
@@ -148,17 +141,15 @@ class _TadarusFormState extends State<TadarusForm> {
             ),
           ),
 
-          // 🔹 Input Halaman
+          // 🔹 Input HALAMAN
           Positioned(
             left: 40,
             top: 230,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   'Halaman',
                   style: TextStyle(
-                    color: Color(0xFF070707),
                     fontSize: 20,
                     fontFamily: 'Aref Ruqaa Ink',
                     fontWeight: FontWeight.bold,
@@ -169,24 +160,15 @@ class _TadarusFormState extends State<TadarusForm> {
                   width: 299,
                   height: 33,
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFF070707), width: 1),
+                    border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: TextField(
                     controller: halamanController,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF070707),
-                      fontFamily: 'Aref Ruqaa Ink',
-                      fontSize: 18,
-                    ),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Masukkan Halaman...',
-                      hintStyle: TextStyle(
-                        color: Colors.black45,
-                        fontFamily: 'Aref Ruqaa Ink',
-                      ),
                     ),
                   ),
                 ),
@@ -194,21 +176,34 @@ class _TadarusFormState extends State<TadarusForm> {
             ),
           ),
 
-          // 🔘 Tombol Simpan
+          // ✅ TOMBOL SIMPAN → CATATAN IBADAH
           Positioned(
             right: 40,
             bottom: 25,
             child: GestureDetector(
               onTap: () {
-                final juz = juzController.text;
-                final halaman = halamanController.text;
+                if (!isChecked) return;
+
+                final tanggal =
+                DateFormat('dd MMM yyyy').format(DateTime.now());
+
+                tadarusList.add({
+                  'juz': juzController.text,
+                  'halaman': halamanController.text,
+                  'selesai': isChecked,
+                  'tanggal': tanggal,
+                });
+
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Disimpan: Juz $juz, Halaman $halaman, Selesai: $isChecked'),
-                    duration: const Duration(seconds: 2),
-                  ),
+                  const SnackBar(
+                      content: Text('✅ Tadarus disimpan ke Catatan Ibadah')),
                 );
+
+                setState(() {
+                  isChecked = false;
+                  juzController.clear();
+                  halamanController.clear();
+                });
               },
               child: Container(
                 width: 81,
@@ -222,7 +217,6 @@ class _TadarusFormState extends State<TadarusForm> {
                     'Simpan',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
                       fontFamily: 'Aref Ruqaa Ink',
                       fontWeight: FontWeight.bold,
                     ),
